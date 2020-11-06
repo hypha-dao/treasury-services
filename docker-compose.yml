@@ -1,0 +1,13 @@
+version: '3.2'
+    
+services:
+  trx-api:
+    command: npm run start
+    ports:
+      - ${HYPHA_BTC_TREASURY_API_PORT}:3000
+    environment:
+      - BWS_CREDENTIALS_DIR=/bws-credentials
+      - BWS_URL
+      - BWS_LOG_LEVEL
+      - BWS_TIMEOUT
+    restart: on-failure

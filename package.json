@@ -1,0 +1,39 @@
+{
+  "name": "treasury-bitcoin",
+  "version": "0.0.1",
+  "description": "API that provides access to hypha btc treasury transactions",
+  "main": "index.js",
+  "scripts": {
+    "start:dev": "eval \"$(./set-local-env.sh)\" npx nodemon src/index.js",
+    "start": "node src/index.js",
+    "test": "jest --watch"
+  },
+  "keywords": [
+    "hypha",
+    "btc",
+    "treasury",
+    "api"
+  ],
+  "author": "Sebastian Montero",
+  "license": "ISC",
+  "dependencies": {
+    "bitcore-wallet-client": "^8.23.1",
+    "bluebird": "^3.7.2",
+    "fastify": "^3.7.0",
+    "fastify-cors": "^4.1.0",
+    "fastify-plugin": "^3.0.0",
+    "fastify-swagger": "^3.5.0",
+    "pino-pretty": "^4.3.0",
+    "sjcl": "^1.0.8"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.15",
+    "eslint": "^7.12.1",
+    "eslint-config-standard": "^16.0.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "jest": "^26.6.3",
+    "nodemon": "^2.0.6"
+  }
+}

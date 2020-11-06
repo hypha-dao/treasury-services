@@ -1,0 +1,9 @@
+version: '3.2'
+
+services:
+  trx-api:
+    build: 
+      context: .
+    volumes:
+      - .:${CODE_PATH}
+      - ${BWS_CREDENTIALS_HOST_DIR}:/bws-credentials
