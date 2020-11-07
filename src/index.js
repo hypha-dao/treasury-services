@@ -28,6 +28,7 @@ async function decorateFastifyInstance (fastify) {
 }
 
 async function main () {
+  console.log('ENV VARS:', process.env)
   // Create the instance
   const server = fastify({ logger: { prettyPrint: NODE_ENV !== 'production' }, pluginTimeout: 20000 })
   // Add application assets and manifest.json serving
