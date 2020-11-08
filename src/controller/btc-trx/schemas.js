@@ -20,7 +20,7 @@ const listTrxsSchema = {
     properties: {
       wallet: { type: 'string' },
       limit: { type: 'integer' },
-      next: { type: 'string' },
+      cursor: { type: 'string' },
       untilTrxId: { type: 'string' }
     },
     additionalProperties: false
@@ -30,7 +30,7 @@ const listTrxsSchema = {
       type: 'object',
       required: ['trxs'],
       properties: {
-        next: { type: 'string' },
+        cursor: { type: 'string' },
         trxs: {
           type: 'array',
           items: trxSchema

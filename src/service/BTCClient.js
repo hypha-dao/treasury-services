@@ -20,7 +20,7 @@ class BTCClient {
 
   async listTrxs ({
     wallet,
-    next,
+    cursor,
     limit,
     untilTrxId
   }) {
@@ -29,7 +29,7 @@ class BTCClient {
     let {
       nextTrxId,
       skip
-    } = this._parseNext(next)
+    } = this._parseCursor(cursor)
     skip = skip || 0
     const client = await this._getWallet(wallet)
     let trxs = []
@@ -41,8 +41,8 @@ class BTCClient {
         includeExtendedInfo: false
       })
       // console.log(JSON.stringify(txPage, null, 4))
-      console.log('txPage length: ', txPage.length)
-      if (!txPage.length) {
+      console.log(`txPage length: ${txPage.length} nextTrxId: ${nextTrxId}`)
+      if (!txPage.length || (txPage.length === 1 && nextTrxId === txPage[0].txid)) {
         return {
           trxs
         }
@@ -52,6 +52,7 @@ class BTCClient {
         const trxPos = this._findTrx(txPage, nextTrxId)
         if (trxPos > -1) {
           txPage = txPage.slice(trxPos + 1)
+          if (txPage.length) { nextTrxId = null }
         } else {
           txPage = []
         }
@@ -67,9 +68,12 @@ class BTCClient {
       }
       trxs = trxs.concat(txPage)
       const leftToFetch = limit - trxs.length
+      if (!nextTrxId) {
+        nextTrxId = trxs[trxs.length - 1].txid
+      }
       if (leftToFetch <= 0) {
         return {
-          next: `${trxs[trxs.length - 1].txid};${skip}`,
+          cursor: `${nextTrxId};${skip}`,
           trxs
         }
       }
@@ -88,11 +92,11 @@ class BTCClient {
 
   /**
    *
-   * @param {string} next
+   * @param {string} cursor
    */
-  _parseNext (next) {
-    next = next || ''
-    const [nextTrxId, skip] = next.split(';')
+  _parseCursor (cursor) {
+    cursor = cursor || ''
+    const [nextTrxId, skip] = cursor.split(';')
     return {
       nextTrxId,
       skip: parseInt(skip)
@@ -117,7 +121,7 @@ class BTCClient {
     } catch (error) {
       console.error('Error getting wallet: ', error)
       delete this.clients[wallet]
-      throw error
+      throw new Error('An error occurred while getting wallet, please make sure the wallet name is correct')
     }
   }
 
