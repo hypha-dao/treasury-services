@@ -77,7 +77,7 @@ class BTCClient {
           trxs
         }
       }
-      pageLimit = pageLimit > leftToFetch ? leftToFetch : pageLimit
+      pageLimit = Math.min(pageLimit, leftToFetch)
     }
   }
 

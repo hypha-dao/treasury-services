@@ -10,4 +10,8 @@ services:
       - BWS_URL
       - BWS_LOG_LEVEL
       - BWS_TIMEOUT
+      - DFUSE_API_KEY
+      - DFUSE_ETH_NETWORK
+      - DFUSE_EOS_NETWORK
+      - WEB3_ENDPOINT
     restart: on-failure

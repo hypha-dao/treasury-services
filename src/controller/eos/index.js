@@ -11,8 +11,7 @@ module.exports = async function (fastify, opts) {
 
   // Logged APIs
   fastify.register(async function (fastify) {
-    // fastify.addHook('preHandler', fastify.authPreHandler)
-    fastify.get('/list', { schema: listTrxsSchema }, listTrxsHandler)
+    fastify.get('/list-trx', { schema: listTrxsSchema }, listTrxsHandler)
   })
 }
 
@@ -20,7 +19,7 @@ module.exports = async function (fastify, opts) {
 module.exports[Symbol.for('plugin-meta')] = {
   decorators: {
     fastify: [
-      'btcClient'
+      'eos'
     ]
   }
 }
@@ -29,5 +28,5 @@ module.exports[Symbol.for('plugin-meta')] = {
 // The fastify instance used for the handler registration
 
 async function listTrxsHandler (req, reply) {
-  return this.btcClient.listTrxs(req.query)
+  return this.eos.listTrxs(req.query)
 }

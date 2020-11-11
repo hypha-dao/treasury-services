@@ -1,0 +1,5 @@
+module.exports = {
+  SUCCEEDED: 'SUCCEEDED',
+  REVERTED: 'REVERTED',
+  FAILED: 'FAILED'
+}

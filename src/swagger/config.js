@@ -12,9 +12,7 @@ module.exports = {
     },
     consumes: ['application/json'],
     produces: ['application/json'],
-    tags: [
-      { name: 'trx', description: 'Query transactions' }
-    ]
+    tags: []
   },
   exposeRoute: true
 }

@@ -1,5 +1,5 @@
 
-const tags = ['btc-trx']
+const tags = ['btc']
 
 const trxSchema = {
   type: 'object',

@@ -1,6 +1,7 @@
 const fastify = require('fastify')
 const fp = require('fastify-plugin')
 const swaggerConfig = require('./swagger/config')
+const { Ether, EOS } = require('./model')
 const { BTCClient } = require('./service')
 
 const {
@@ -9,7 +10,11 @@ const {
   BWS_CREDENTIALS_DIR,
   BWS_URL,
   BWS_LOG_LEVEL,
-  BWS_TIMEOUT
+  BWS_TIMEOUT,
+  DFUSE_API_KEY,
+  DFUSE_ETH_NETWORK,
+  DFUSE_EOS_NETWORK,
+  WEB3_ENDPOINT
 } = process.env
 
 function unhandledRejectionHandler (error) {
@@ -24,7 +29,18 @@ async function decorateFastifyInstance (fastify) {
     logLevel: BWS_LOG_LEVEL,
     timeout: BWS_TIMEOUT
   })
+  const eos = new EOS({
+    dfuseApiKey: DFUSE_API_KEY,
+    dfuseNetwork: DFUSE_EOS_NETWORK
+  })
+  const ether = new Ether({
+    dfuseApiKey: DFUSE_API_KEY,
+    dfuseNetwork: DFUSE_ETH_NETWORK,
+    web3Endpoint: WEB3_ENDPOINT
+  })
   fastify.decorate('btcClient', btcClient)
+  fastify.decorate('eos', eos)
+  fastify.decorate('ether', ether)
 }
 
 async function main () {
@@ -41,7 +57,9 @@ async function main () {
     })
     .register(fp(decorateFastifyInstance))
     // APIs modules
-    .register(require('./controller/btc-trx'), { prefix: '/api/btc-trx' })
+    .register(require('./controller/btc'), { prefix: '/api/btc' })
+    .register(require('./controller/eos'), { prefix: '/api/eos' })
+    .register(require('./controller/ether'), { prefix: '/api/ether' })
 
     // static resources
     .setErrorHandler(function (error, request, reply) {
