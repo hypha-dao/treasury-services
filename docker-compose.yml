@@ -14,4 +14,5 @@ services:
       - DFUSE_ETH_NETWORK
       - DFUSE_EOS_NETWORK
       - WEB3_ENDPOINT
+      - HYPERION_TELOS_ENDPOINT
     restart: on-failure

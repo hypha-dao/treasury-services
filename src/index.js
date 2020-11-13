@@ -1,7 +1,7 @@
 const fastify = require('fastify')
 const fp = require('fastify-plugin')
 const swaggerConfig = require('./swagger/config')
-const { Ether, EOS } = require('./model')
+const { Ether, EOS, Telos } = require('./model')
 const { BTCClient } = require('./service')
 
 const {
@@ -14,7 +14,8 @@ const {
   DFUSE_API_KEY,
   DFUSE_ETH_NETWORK,
   DFUSE_EOS_NETWORK,
-  WEB3_ENDPOINT
+  WEB3_ENDPOINT,
+  HYPERION_TELOS_ENDPOINT
 } = process.env
 
 function unhandledRejectionHandler (error) {
@@ -38,9 +39,11 @@ async function decorateFastifyInstance (fastify) {
     dfuseNetwork: DFUSE_ETH_NETWORK,
     web3Endpoint: WEB3_ENDPOINT
   })
+  const telos = new Telos(HYPERION_TELOS_ENDPOINT)
   fastify.decorate('btcClient', btcClient)
   fastify.decorate('eos', eos)
   fastify.decorate('ether', ether)
+  fastify.decorate('telos', telos)
 }
 
 async function main () {
@@ -60,6 +63,7 @@ async function main () {
     .register(require('./controller/btc'), { prefix: '/api/btc' })
     .register(require('./controller/eos'), { prefix: '/api/eos' })
     .register(require('./controller/ether'), { prefix: '/api/ether' })
+    .register(require('./controller/telos'), { prefix: '/api/telos' })
 
     // static resources
     .setErrorHandler(function (error, request, reply) {
