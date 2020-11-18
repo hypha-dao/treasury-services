@@ -1,32 +1,7 @@
-const Web3 = require('web3')
-const { DfuseClient } = require('../service')
+const { DfuseClient, ethereumABIDecoder, Web3Client } = require('../service')
 const { EtherTrxStatus } = require('../const')
 
-const tokenContractAbi = [
-  // balanceOf
-  {
-    constant: true,
-    inputs: [{ name: '_owner', type: 'address' }],
-    name: 'balanceOf',
-    outputs: [{ name: 'balance', type: 'uint256' }],
-    type: 'function'
-  },
-  // decimals
-  {
-    constant: true,
-    inputs: [],
-    name: 'decimals',
-    outputs: [{ name: '', type: 'uint8' }],
-    type: 'function'
-  },
-  {
-    constant: true,
-    inputs: [],
-    name: 'symbol',
-    outputs: [{ name: '', type: 'string' }],
-    type: 'function'
-  }
-]
+const { USDT } = require('../abi/ethereum')
 
 const listQuery = `query ($query: String!, $sort: SORT, $cursor: String, $limit: Int64) {
   searchTransactions(indexName: CALLS, query: $query, sort: $sort, cursor: $cursor, limit: $limit) {
@@ -47,6 +22,24 @@ const listQuery = `query ($query: String!, $sort: SORT, $cursor: String, $limit:
       gasLimit
       gasUsed
       status
+      method{
+        hexSignature
+        textSignature
+      }
+      inputData
+      matchingCalls{
+        from
+        to
+        callType
+        value
+      }
+      allLogs{
+        address
+        topics
+        data
+        blockIndex
+        transactionIndex
+      }
     }
    }
    pageInfo{
@@ -55,6 +48,10 @@ const listQuery = `query ($query: String!, $sort: SORT, $cursor: String, $limit:
   }
 }`
 
+const methodsToDecode = {
+  '0x6a761202': 'transfer'
+}
+
 class Ether {
   constructor ({
     dfuseApiKey,
@@ -62,15 +59,16 @@ class Ether {
     web3Endpoint
   }) {
     this.dfuseClient = new DfuseClient({ apiKey: dfuseApiKey, network: dfuseNetwork })
-    this.web3 = this._createWeb3Client(web3Endpoint)
+    this.web3 = new Web3Client(web3Endpoint)
     this.tokenContracts = { }
+    ethereumABIDecoder.addABI(USDT)
   }
 
   async getBalance ({
     address,
     contractAddress = null
   }) {
-    return contractAddress ? this._getTokenContractBalance(address, contractAddress) : this._getEthBalance(address)
+    return this.web3.getBalance(address, contractAddress)
   }
 
   async listTrxs ({
@@ -82,7 +80,7 @@ class Ether {
     limit = limit || 100
     let pageLimit = limit
     const variables = {
-      query: `-value:0 (to:${address} OR from:${address})`,
+      query: `(to:${address} OR from:${address})`,
       cursor,
       limit: pageLimit,
       sort: 'ASC'
@@ -106,6 +104,8 @@ class Ether {
       }
       cursor = endCursor
       edges = edges.filter(({ node: { status } }) => status === EtherTrxStatus.SUCCEEDED)
+      edges = edges.map(async edge => this._decodeERC20Transfer(edge))
+      edges = await Promise.all(edges)
       trxs = trxs.concat(edges)
       const leftToFetch = limit - trxs.length
       if (leftToFetch <= 0) {
@@ -120,53 +120,59 @@ class Ether {
     }
   }
 
-  _createWeb3Client (web3Endpoint) {
-    const options = {
-      timeout: 30000, // ms
-      clientConfig: {
-        // Useful to keep a connection alive
-        keepalive: true,
-        keepaliveInterval: 60000 // ms
-      },
-      // Enable auto reconnection
-      reconnect: {
-        auto: true,
-        delay: 3000, // ms
-        maxAttempts: 5,
-        onTimeout: false
+  async _decodeERC20Transfer (edge) {
+    const {
+      block,
+      node: {
+        hash,
+        from,
+        to,
+        value,
+        gasPrice,
+        gasLimit,
+        gasUsed,
+        status,
+        method: {
+          hexSignature
+        },
+        allLogs
+      }
+    } = edge
+    let erc20Transfer = null
+    if (methodsToDecode[hexSignature]) {
+      console.log(hash)
+      const result = ethereumABIDecoder.decodeLogs(allLogs)
+      console.log(JSON.stringify(result, null, 4))
+      if (result && result[0]) {
+        const transfer = result[0]
+        if (transfer.name.toLowerCase() === 'transfer') {
+          const {
+            address,
+            events: [from, to, value]
+          } = transfer
+          const contract = await this.web3.getERC20Contract(address)
+          erc20Transfer = {
+            from: from.value,
+            to: to.value,
+            value: contract.normalizeAmount(value.value),
+            symbol: contract.symbol
+          }
+        }
       }
     }
-    const ws = new Web3.providers.WebsocketProvider(web3Endpoint, options)
-    return new Web3(ws)
-  }
-
-  async _getTokenContractBalance (address, contractAddress) {
-    const contractInfo = await this._getTokenContract(contractAddress)
-    const { contract, decimals, symbol } = contractInfo
-    let balance = await contract.methods.balanceOf(address).call()
-    balance = (balance / (10 ** decimals)).toString()
     return {
-      balance,
-      symbol
-    }
-  }
-
-  async _getTokenContract (contractAddress) {
-    if (!this.tokenContracts[contractAddress]) {
-      const contract = new this.web3.eth.Contract(tokenContractAbi, contractAddress)
-      const decimals = await contract.methods.decimals().call()
-      const symbol = await contract.methods.symbol().call()
-      this.tokenContracts[contractAddress] = { contract, decimals, symbol }
-    }
-    return this.tokenContracts[contractAddress]
-  }
-
-  async _getEthBalance (address) {
-    const weiBalance = await this.web3.eth.getBalance(address)
-    return {
-      weiBalance,
-      balance: this.web3.utils.fromWei(weiBalance),
-      symbol: 'ETH'
+      block,
+      node: {
+        hash,
+        from,
+        to,
+        value,
+        gasPrice,
+        gasLimit,
+        gasUsed,
+        status,
+        erc20Transfer
+      }
     }
   }
 }

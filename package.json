@@ -18,6 +18,7 @@
   "license": "ISC",
   "dependencies": {
     "@dfuse/client": "^0.3.17",
+    "abi-decoder": "^2.3.0",
     "axios": "^0.21.0",
     "bitcore-wallet-client": "^8.23.1",
     "bluebird": "^3.7.2",
