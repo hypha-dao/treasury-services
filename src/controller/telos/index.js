@@ -1,7 +1,8 @@
 'use strict'
 
 const {
-  listTrxsSchema
+  listTrxsSchema,
+  listTokenOpSchema
 } = require('./schemas')
 
 module.exports = async function (fastify, opts) {
@@ -12,6 +13,7 @@ module.exports = async function (fastify, opts) {
   // Logged APIs
   fastify.register(async function (fastify) {
     fastify.get('/list-trx', { schema: listTrxsSchema }, listTrxsHandler)
+    fastify.get('/list-token-ops', { schema: listTokenOpSchema }, listTokenOpsHandler)
   })
 }
 
@@ -29,4 +31,8 @@ module.exports[Symbol.for('plugin-meta')] = {
 
 async function listTrxsHandler (req, reply) {
   return this.telos.listTrxs(req.query)
+}
+
+async function listTokenOpsHandler (req, reply) {
+  return this.telos.listTokenOps(req.query)
 }

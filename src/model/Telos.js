@@ -1,4 +1,4 @@
-const { TransferDirection } = require('../const')
+const { TransferDirection, TokenOp } = require('../const')
 const { HyperionClient } = require('../service')
 
 class Telos {
@@ -31,7 +31,34 @@ class Telos {
       params['act.account'] = tokenContract
     }
     const { simple_actions: trxs } = await this.client.getActions(params)
+    console.log('Number of trxs: ', trxs.length)
     return { trxs }
+  }
+
+  async listTokenOps ({
+    tokenContract,
+    tokenOp,
+    skip,
+    limit
+  }) {
+    skip = skip || 0
+    limit = limit || 100
+    tokenOp = tokenOp || TokenOp.ISSUE
+    const params = {
+      'act.name': tokenOp,
+      skip,
+      limit,
+      sort: 'asc',
+      simple: true,
+      noBinary: true,
+      checkLib: true
+    }
+    if (tokenContract) {
+      params['act.account'] = tokenContract
+    }
+    const { simple_actions: tokenOps } = await this.client.getActions(params)
+    console.log('Number of trxs: ', tokenOps.length)
+    return { tokenOps }
   }
 }
 

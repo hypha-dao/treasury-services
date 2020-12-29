@@ -1,5 +1,22 @@
-const { TransferDirection } = require('../../const')
+const { TransferDirection, TokenOp } = require('../../const')
 const tags = ['telos']
+
+const tokenOpSchema = {
+  type: 'object',
+  properties: {
+    block: { type: 'integer' },
+    timestamp: { type: 'string' },
+    irreversible: { type: 'integer' },
+    contract: { type: 'string' },
+    action: { type: 'string' },
+    transaction_id: { type: 'string' },
+    data: {
+      type: 'object',
+      additionalProperties: true
+    }
+  },
+  additionalProperties: false
+}
 
 const trxSchema = {
   type: 'object',
@@ -23,6 +40,33 @@ const trxSchema = {
     }
   },
   additionalProperties: false
+}
+
+const listTokenOpSchema = {
+  tags,
+  query: {
+    type: 'object',
+    properties: {
+      tokenContract: { type: 'string' },
+      tokenOp: { type: 'string', enum: Object.values(TokenOp) },
+      skip: { type: 'integer' },
+      limit: { type: 'integer' }
+
+    },
+    additionalProperties: false
+  },
+  response: {
+    200: {
+      type: 'object',
+      required: ['tokenOps'],
+      properties: {
+        tokenOps: {
+          type: 'array',
+          items: tokenOpSchema
+        }
+      }
+    }
+  }
 }
 
 const listTrxsSchema = {
@@ -54,5 +98,6 @@ const listTrxsSchema = {
 }
 
 module.exports = {
-  listTrxsSchema
+  listTrxsSchema,
+  listTokenOpSchema
 }
