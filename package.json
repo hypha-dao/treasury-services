@@ -6,7 +6,8 @@
   "scripts": {
     "start:dev": "eval \"$(./set-local-env.sh)\" npx nodemon src/index.js",
     "start": "node src/index.js",
-    "test": "jest --watch"
+    "test": "jest --watch",
+    "start:oracle:dev": "eval \"$(./set-local-env.sh)\" node src/TrxOracleRunner.js"
   },
   "keywords": [
     "hypha",
@@ -22,6 +23,7 @@
     "axios": "^0.21.0",
     "bitcore-wallet-client": "^8.23.1",
     "bluebird": "^3.7.2",
+    "eosjs": "^21.0.3",
     "fastify": "^3.7.0",
     "fastify-cors": "^4.1.0",
     "fastify-plugin": "^3.0.0",

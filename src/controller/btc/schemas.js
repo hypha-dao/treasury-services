@@ -14,14 +14,16 @@ const trxSchema = {
 
 const listTrxsSchema = {
   tags,
-  query: {
+  body: {
     type: 'object',
     required: ['wallet'],
     properties: {
       wallet: { type: 'string' },
       limit: { type: 'integer' },
       cursor: { type: 'string' },
-      untilTrxId: { type: 'string' }
+      untilTrxId: { type: 'string' },
+      minConfirmations: { type: 'integer' },
+      ops: { type: 'array', items: { type: 'string' } }
     },
     additionalProperties: false
   },
@@ -34,7 +36,8 @@ const listTrxsSchema = {
         trxs: {
           type: 'array',
           items: trxSchema
-        }
+        },
+        untilTrxFound: { type: 'boolean' }
       }
     }
   }

@@ -20,8 +20,8 @@ class Web3Client {
         onTimeout: false
       }
     }
-    const ws = new Web3.providers.WebsocketProvider(web3Endpoint, options)
-    this.web3 = new Web3(ws)
+    this.ws = new Web3.providers.WebsocketProvider(web3Endpoint, options)
+    this.web3 = new Web3(this.ws)
   }
 
   getContract (contractABI, contractAddress) {
@@ -54,6 +54,10 @@ class Web3Client {
       balance: this.web3.utils.fromWei(weiBalance),
       symbol: 'ETH'
     }
+  }
+
+  async release () {
+    return this.ws.disconnect()
   }
 }
 

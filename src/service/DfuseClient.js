@@ -55,6 +55,10 @@ class DfuseClient {
     }
     return response.data
   }
+
+  release () {
+    this.client.release()
+  }
 }
 
 module.exports = DfuseClient

@@ -11,7 +11,7 @@ module.exports = async function (fastify, opts) {
 
   // Logged APIs
   fastify.register(async function (fastify) {
-    fastify.get('/list-trx', { schema: listTrxsSchema }, listTrxsHandler)
+    fastify.post('/list-trx', { schema: listTrxsSchema }, listTrxsHandler)
   })
 }
 
@@ -28,5 +28,5 @@ module.exports[Symbol.for('plugin-meta')] = {
 // The fastify instance used for the handler registration
 
 async function listTrxsHandler (req, reply) {
-  return this.btcClient.listTrxs(req.query)
+  return this.btcClient.listTrxs(req.body)
 }

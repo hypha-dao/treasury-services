@@ -16,26 +16,18 @@ const actionSchema = {
 
 const trxSchema = {
   type: 'object',
-  required: ['trace'],
   properties: {
-    trace: {
+    cursor: { type: 'string' },
+    trxId: { type: 'string' },
+    block: {
       type: 'object',
       properties: {
+        num: { type: 'integer' },
         id: { type: 'string' },
-        block: {
-          type: 'object',
-          properties: {
-            num: { type: 'integer' },
-            id: { type: 'string' },
-            timestamp: { type: 'string' }
-          }
-        },
-        matchingActions: {
-          type: 'array',
-          items: actionSchema
-        }
+        timestamp: { type: 'string' }
       }
-    }
+    },
+    action: actionSchema
   },
   additionalProperties: false
 }
@@ -57,7 +49,6 @@ const listTrxsSchema = {
       type: 'object',
       required: ['trxs'],
       properties: {
-        cursor: { type: 'string' },
         hasMore: { type: 'boolean' },
         trxs: {
           type: 'array',

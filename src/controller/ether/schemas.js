@@ -5,6 +5,7 @@ const trxSchema = {
   type: 'object',
   required: ['block', 'node'],
   properties: {
+    cursor: { type: 'string' },
     block: {
       type: 'object',
       properties: {
