@@ -23,7 +23,7 @@ class AccountingAPI {
     return this.eosAPI.transact([
       {
         account: this.contract,
-        name: 'newunrvwdtrx',
+        name: 'newevent',
         authorization: [{
           actor: this.eosAccount,
           permission: 'active'
