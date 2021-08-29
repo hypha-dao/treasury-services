@@ -10,9 +10,11 @@ services:
       - BWS_URL
       - BWS_LOG_LEVEL
       - BWS_TIMEOUT
-      - DFUSE_API_KEY
-      - DFUSE_ETH_NETWORK
+      - DFUSE_EOS_API_KEY
       - DFUSE_EOS_NETWORK
+      - DFUSE_ETH_API_KEY
+      - DFUSE_ETH_NETWORK
+      - DFUSE_TELOS_API_KEY
+      - DFUSE_TELOS_NETWORK
       - WEB3_ENDPOINT
-      - HYPERION_TELOS_ENDPOINT
     restart: on-failure

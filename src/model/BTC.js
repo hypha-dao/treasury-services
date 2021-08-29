@@ -29,7 +29,7 @@ class BTC extends TrxProvider {
     ]
   }
 
-  async getHomoTrxs ({
+  async getHomoTransferTrxs ({
     source,
     cursor,
     limit

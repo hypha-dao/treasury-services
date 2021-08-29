@@ -1,65 +1,35 @@
-const { TransferDirection, TokenOp } = require('../const')
-const { HyperionClient } = require('../service')
+const { EOSIODfuseClient } = require('../service')
+const EOSIODfuseTrxProvider = require('./EOSIODfuseTrxProvider')
 
-class Telos {
-  constructor (baseURL) {
-    this.client = new HyperionClient(baseURL)
+class TELOS extends EOSIODfuseTrxProvider {
+  constructor ({
+    dfuseApiKey,
+    dfuseNetwork
+  }) {
+    super({
+      dfuseApiKey,
+      dfuseNetwork,
+      chainId: 'eosio:4667b205c6838ef70ff7988f6e8257e8'
+    })
+    this.dfuseClient = new EOSIODfuseClient({ apiKey: dfuseApiKey, network: dfuseNetwork })
   }
 
-  async listTrxs ({
-    tokenContract,
-    account,
-    transferDirection,
-    skip,
-    limit
-  }) {
-    skip = skip || 0
-    limit = limit || 100
-    const params = {
-      'act.name': 'transfer',
-      skip,
-      limit,
-      sort: 'asc',
-      simple: true,
-      noBinary: true,
-      checkLib: true
-    }
-    if (account) {
-      params[transferDirection === TransferDirection.IN ? 'transfer.to' : 'transfer.from'] = account
-    }
-    if (tokenContract) {
-      params['act.account'] = tokenContract
-    }
-    const { simple_actions: trxs } = await this.client.getActions(params)
-    console.log('Number of trxs: ', trxs.length)
-    return { trxs }
-  }
-
-  async listTokenOps ({
-    tokenContract,
-    tokenOp,
-    skip,
-    limit
-  }) {
-    skip = skip || 0
-    limit = limit || 100
-    tokenOp = tokenOp || TokenOp.ISSUE
-    const params = {
-      'act.name': tokenOp,
-      skip,
-      limit,
-      sort: 'asc',
-      simple: true,
-      noBinary: true,
-      checkLib: true
-    }
-    if (tokenContract) {
-      params['act.account'] = tokenContract
-    }
-    const { simple_actions: tokenOps } = await this.client.getActions(params)
-    console.log('Number of trxs: ', tokenOps.length)
-    return { tokenOps }
+  getSources () {
+    return [
+      'telos-dao.hypha-eosio.token',
+      'telos-dao.hypha-husd.hypha',
+      'telos-dao.hypha-token.hypha',
+      'telos-dao.hypha-token.seeds',
+      'telos-seeds.hypha-eosio.token',
+      'telos-seeds.hypha-husd.hypha',
+      'telos-seeds.hypha-token.hypha',
+      'telos-seeds.hypha-token.seeds',
+      'telos-bank.hypha-eosio.token',
+      'telos-bank.hypha-husd.hypha',
+      'telos-bank.hypha-token.hypha',
+      'telos-bank.hypha-token.seeds'
+    ]
   }
 }
 
-module.exports = Telos
+module.exports = TELOS

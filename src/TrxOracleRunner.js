@@ -3,17 +3,17 @@ const { BTC, Ether, EOS, Telos } = require('./model')
 const { TrxOracle } = require('./oracle')
 
 const {
-  NODE_ENV,
-  PORT, // has to come from env vars because its set by app services
   BWS_CREDENTIALS_DIR,
   BWS_URL,
   BWS_LOG_LEVEL,
   BWS_TIMEOUT,
-  DFUSE_API_KEY,
-  DFUSE_ETH_NETWORK,
+  DFUSE_EOS_API_KEY,
   DFUSE_EOS_NETWORK,
+  DFUSE_ETH_API_KEY,
+  DFUSE_ETH_NETWORK,
+  DFUSE_TELOS_API_KEY,
+  DFUSE_TELOS_NETWORK,
   WEB3_ENDPOINT,
-  HYPERION_TELOS_ENDPOINT,
   EOS_ENDPOINT,
   ACCOUNTING_CONTRACT,
   EOS_ACCOUNT,
@@ -32,16 +32,19 @@ class TrxOracleRunner {
         minConfirmations: BTC_MIN_CONFIRMATIONS
       }),
       new EOS({
-        dfuseApiKey: DFUSE_API_KEY,
+        dfuseApiKey: DFUSE_EOS_API_KEY,
         dfuseNetwork: DFUSE_EOS_NETWORK
       }),
       new Ether({
-        dfuseApiKey: DFUSE_API_KEY,
+        dfuseApiKey: DFUSE_ETH_API_KEY,
         dfuseNetwork: DFUSE_ETH_NETWORK,
         web3Endpoint: WEB3_ENDPOINT
+      }),
+      new Telos({
+        dfuseApiKey: DFUSE_TELOS_API_KEY,
+        dfuseNetwork: DFUSE_TELOS_NETWORK
       })
     ]
-    // const telos = new Telos(HYPERION_TELOS_ENDPOINT)
     const eosAPI = new EOSAPI({
       endpoint: EOS_ENDPOINT,
       keys: EOS_ACCOUNT_KEY

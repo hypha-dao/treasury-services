@@ -3,7 +3,7 @@ class TrxProvider {
     throw new Error('Must be overriden by child class')
   }
 
-  async getHomoTrxs ({
+  async getHomoTransferTrxs ({
     source,
     cursor,
     limit

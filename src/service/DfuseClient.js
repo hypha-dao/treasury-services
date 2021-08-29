@@ -51,7 +51,12 @@ class DfuseClient {
   async query (queryStr, opts) {
     const response = await this.client.graphql(queryStr, opts)
     if (response.errors) {
-      throw response.errors
+      let err = ''
+      response.errors.forEach((error) => {
+        err = `${err} ${error.message},`
+      })
+      // const err = response.errors[0].message
+      throw new Error(`failed querying dfuse endpoint: ${err}`)
     }
     return response.data
   }

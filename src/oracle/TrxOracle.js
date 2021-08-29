@@ -41,7 +41,7 @@ class TrxOracle {
     try {
       let cursor = await this._getCursor(source)
       while (true) {
-        const trxs = await trxProvider.getHomoTrxs({
+        const trxs = await trxProvider.getHomoTransferTrxs({
           source,
           cursor,
           limit: this.limit

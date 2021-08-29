@@ -102,6 +102,7 @@ class Ether extends TrxProvider {
           }
         }
       } = response
+      // console.log('Response: ', JSON.stringify(response))
       if (!edges.length) {
         return {
           trxs,
@@ -114,6 +115,7 @@ class Ether extends TrxProvider {
       edges = edges.map(async edge => this._decodeERC20Transfer(edge))
       edges = await Promise.all(edges)
       trxs = trxs.concat(edges)
+
       const leftToFetch = limit - trxs.length
       if (leftToFetch <= 0) {
         return {
@@ -131,7 +133,7 @@ class Ether extends TrxProvider {
     return ['ether-0xC20f453a4B4995CA032570f212988F4978B35dDd']
   }
 
-  async getHomoTrxs ({
+  async getHomoTransferTrxs ({
     source,
     cursor,
     limit
@@ -226,8 +228,9 @@ class Ether extends TrxProvider {
     let erc20Transfer = null
     if (methodsToDecode[hexSignature]) {
       // console.log(hash)
+      // console.log('Edge: ', JSON.stringify(edge, null, 4))
       const result = ethereumABIDecoder.decodeLogs(allLogs)
-      // console.log(JSON.stringify(result, null, 4))
+      // console.log('Decoded logs: ', JSON.stringify(result, null, 4))
       if (result && result[0]) {
         const transfer = result[0]
         if (transfer.name.toLowerCase() === 'transfer') {
