@@ -30,9 +30,9 @@ module.exports[Symbol.for('plugin-meta')] = {
 // The fastify instance used for the handler registration
 
 async function listTrxsHandler (req, reply) {
-  return this.telos.listTrxs(req.query)
+  return this.telos.listTransferTrxs(req.query)
 }
 
 async function listTokenOpsHandler (req, reply) {
-  return this.telos.listTokenOps(req.query)
+  return this.telos.listTokenOpTrxs(req.query)
 }

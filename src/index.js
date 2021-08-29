@@ -11,11 +11,13 @@ const {
   BWS_URL,
   BWS_LOG_LEVEL,
   BWS_TIMEOUT,
-  DFUSE_API_KEY,
-  DFUSE_ETH_NETWORK,
+  DFUSE_EOS_API_KEY,
   DFUSE_EOS_NETWORK,
-  WEB3_ENDPOINT,
-  HYPERION_TELOS_ENDPOINT
+  DFUSE_ETH_API_KEY,
+  DFUSE_ETH_NETWORK,
+  DFUSE_TELOS_API_KEY,
+  DFUSE_TELOS_NETWORK,
+  WEB3_ENDPOINT
 } = process.env
 
 function unhandledRejectionHandler (error) {
@@ -31,15 +33,18 @@ async function decorateFastifyInstance (fastify) {
     timeout: BWS_TIMEOUT
   })
   const eos = new EOS({
-    dfuseApiKey: DFUSE_API_KEY,
+    dfuseApiKey: DFUSE_EOS_API_KEY,
     dfuseNetwork: DFUSE_EOS_NETWORK
   })
   const ether = new Ether({
-    dfuseApiKey: DFUSE_API_KEY,
+    dfuseApiKey: DFUSE_ETH_API_KEY,
     dfuseNetwork: DFUSE_ETH_NETWORK,
     web3Endpoint: WEB3_ENDPOINT
   })
-  const telos = new Telos(HYPERION_TELOS_ENDPOINT)
+  const telos = new Telos({
+    dfuseApiKey: DFUSE_TELOS_API_KEY,
+    dfuseNetwork: DFUSE_TELOS_NETWORK
+  })
   fastify.decorate('btcClient', btcClient)
   fastify.decorate('eos', eos)
   fastify.decorate('ether', ether)

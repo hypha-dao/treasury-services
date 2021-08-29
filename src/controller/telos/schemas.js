@@ -1,43 +1,33 @@
-const { TransferDirection, TokenOp } = require('../../const')
+const { TokenOp } = require('../../const')
 const tags = ['telos']
 
-const tokenOpSchema = {
+const actionSchema = {
   type: 'object',
   properties: {
-    block: { type: 'integer' },
-    timestamp: { type: 'string' },
-    irreversible: { type: 'integer' },
-    contract: { type: 'string' },
-    action: { type: 'string' },
-    transaction_id: { type: 'string' },
-    data: {
+    account: { type: 'string' },
+    name: { type: 'string' },
+    seq: { type: 'string' },
+    json: {
       type: 'object',
       additionalProperties: true
     }
-  },
-  additionalProperties: false
+  }
 }
 
 const trxSchema = {
   type: 'object',
   properties: {
-    block: { type: 'integer' },
-    timestamp: { type: 'string' },
-    irreversible: { type: 'integer' },
-    contract: { type: 'string' },
-    action: { type: 'string' },
-    transaction_id: { type: 'string' },
-    data: {
+    cursor: { type: 'string' },
+    trxId: { type: 'string' },
+    block: {
       type: 'object',
       properties: {
-        from: { type: 'string' },
-        to: { type: 'string' },
-        amount: { type: 'number' },
-        symbol: { type: 'string' },
-        memo: { type: 'string' },
-        quantity: { type: 'string' }
+        num: { type: 'integer' },
+        id: { type: 'string' },
+        timestamp: { type: 'string' }
       }
-    }
+    },
+    action: actionSchema
   },
   additionalProperties: false
 }
@@ -49,35 +39,7 @@ const listTokenOpSchema = {
     properties: {
       tokenContract: { type: 'string' },
       tokenOp: { type: 'string', enum: Object.values(TokenOp) },
-      skip: { type: 'integer' },
-      limit: { type: 'integer' }
-
-    },
-    additionalProperties: false
-  },
-  response: {
-    200: {
-      type: 'object',
-      required: ['tokenOps'],
-      properties: {
-        tokenOps: {
-          type: 'array',
-          items: tokenOpSchema
-        }
-      }
-    }
-  }
-}
-
-const listTrxsSchema = {
-  tags,
-  query: {
-    type: 'object',
-    properties: {
-      tokenContract: { type: 'string' },
-      account: { type: 'string' },
-      transferDirection: { type: 'string', enum: Object.values(TransferDirection) },
-      skip: { type: 'integer' },
+      cursor: { type: 'string' },
       limit: { type: 'integer' }
 
     },
@@ -88,6 +50,35 @@ const listTrxsSchema = {
       type: 'object',
       required: ['trxs'],
       properties: {
+        hasMore: { type: 'boolean' },
+        trxs: {
+          type: 'array',
+          items: trxSchema
+        }
+      }
+    }
+  }
+}
+
+const listTrxsSchema = {
+  tags,
+  query: {
+    type: 'object',
+    required: ['account'],
+    properties: {
+      tokenContract: { type: 'string' },
+      account: { type: 'string' },
+      limit: { type: 'integer' },
+      cursor: { type: 'string' }
+    },
+    additionalProperties: false
+  },
+  response: {
+    200: {
+      type: 'object',
+      required: ['trxs'],
+      properties: {
+        hasMore: { type: 'boolean' },
         trxs: {
           type: 'array',
           items: trxSchema

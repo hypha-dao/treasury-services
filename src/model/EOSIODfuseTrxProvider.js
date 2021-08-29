@@ -1,3 +1,4 @@
+const { TokenOp } = require('../const')
 const { EOSIODfuseClient } = require('../service')
 const TrxProvider = require('./TrxProvider')
 
@@ -20,6 +21,20 @@ class EOSIODfuseTrxProvider extends TrxProvider {
   }) {
     return this.dfuseClient.listTrxs({
       query: `account:${tokenContract} receiver:${tokenContract} action:transfer (data.from:${account} OR data.to:${account})`,
+      cursor,
+      limit
+    })
+  }
+
+  async listTokenOpTrxs ({
+    tokenContract,
+    tokenOp,
+    cursor,
+    limit
+  }) {
+    tokenOp = tokenOp || TokenOp.ISSUE
+    return this.dfuseClient.listTrxs({
+      query: `account:${tokenContract} receiver:${tokenContract} action:${tokenOp}`,
       cursor,
       limit
     })

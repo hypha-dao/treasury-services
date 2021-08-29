@@ -1,7 +1,7 @@
 const { EOSIODfuseClient } = require('../service')
 const EOSIODfuseTrxProvider = require('./EOSIODfuseTrxProvider')
 
-class TELOS extends EOSIODfuseTrxProvider {
+class Telos extends EOSIODfuseTrxProvider {
   constructor ({
     dfuseApiKey,
     dfuseNetwork
@@ -32,4 +32,4 @@ class TELOS extends EOSIODfuseTrxProvider {
   }
 }
 
-module.exports = TELOS
+module.exports = Telos

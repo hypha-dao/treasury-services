@@ -28,5 +28,5 @@ module.exports[Symbol.for('plugin-meta')] = {
 // The fastify instance used for the handler registration
 
 async function listTrxsHandler (req, reply) {
-  return this.eos.listTrxs(req.query)
+  return this.eos.listTransferTrxs(req.query)
 }

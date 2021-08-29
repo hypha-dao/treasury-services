@@ -38,6 +38,7 @@ const listTrxsSchema = {
     type: 'object',
     required: ['account'],
     properties: {
+      tokenContract: { type: 'string' },
       account: { type: 'string' },
       limit: { type: 'integer' },
       cursor: { type: 'string' }
