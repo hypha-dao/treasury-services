@@ -2,6 +2,8 @@ const { BTCTrxOp } = require('../const')
 const { BTCClient } = require('../service')
 const TrxProvider = require('./TrxProvider')
 
+const SATOSHI_PER_BTC = 100000000
+
 class BTC extends TrxProvider {
   constructor ({
     baseUrl,
@@ -50,7 +52,7 @@ class BTC extends TrxProvider {
         cursor,
         txid: trxId,
         time,
-        amount: quantity,
+        amount,
         fees,
         walletId,
         addressTo,
@@ -71,7 +73,7 @@ class BTC extends TrxProvider {
         trxId,
         from,
         to,
-        quantity,
+        quantity: amount / SATOSHI_PER_BTC,
         memo,
         fees,
         currency: 'BTC',

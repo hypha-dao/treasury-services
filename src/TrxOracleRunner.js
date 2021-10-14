@@ -30,20 +30,20 @@ class TrxOracleRunner {
         logLevel: BWS_LOG_LEVEL,
         timeout: BWS_TIMEOUT,
         minConfirmations: BTC_MIN_CONFIRMATIONS
-      }),
-      new EOS({
-        dfuseApiKey: DFUSE_EOS_API_KEY,
-        dfuseNetwork: DFUSE_EOS_NETWORK
-      }),
-      new Ether({
-        dfuseApiKey: DFUSE_ETH_API_KEY,
-        dfuseNetwork: DFUSE_ETH_NETWORK,
-        web3Endpoint: WEB3_ENDPOINT
-      }),
-      new Telos({
-        dfuseApiKey: DFUSE_TELOS_API_KEY,
-        dfuseNetwork: DFUSE_TELOS_NETWORK
       })
+      // new EOS({
+      //   dfuseApiKey: DFUSE_EOS_API_KEY,
+      //   dfuseNetwork: DFUSE_EOS_NETWORK
+      // }),
+      // new Ether({
+      //   dfuseApiKey: DFUSE_ETH_API_KEY,
+      //   dfuseNetwork: DFUSE_ETH_NETWORK,
+      //   web3Endpoint: WEB3_ENDPOINT
+      // }),
+      // new Telos({
+      //   dfuseApiKey: DFUSE_TELOS_API_KEY,
+      //   dfuseNetwork: DFUSE_TELOS_NETWORK
+      // })
     ]
     const eosAPI = new EOSAPI({
       endpoint: EOS_ENDPOINT,

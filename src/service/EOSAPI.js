@@ -8,6 +8,7 @@ class EOSAPI {
     endpoint,
     keys
   }) {
+    console.log('endpoint: ', endpoint)
     keys = Array.isArray(keys) ? keys : [keys]
     this.rpc = new JsonRpc(endpoint, { fetch })
     this.api = new Api({
@@ -82,12 +83,14 @@ class EOSAPI {
     valueProp
   }) {
     const map = {}
+    console.log('Getting table rows: ', code, scope, table, tableId, keyProp, valueProp)
     const rows = await this.getAllTableRows({
       code,
       scope,
       table,
       tableId
     })
+    console.log('Got table rows: ', rows)
     rows.forEach(row => {
       map[row[keyProp]] = row[valueProp]
     })
