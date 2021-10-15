@@ -8,7 +8,6 @@ class EOSAPI {
     endpoint,
     keys
   }) {
-    console.log('endpoint: ', endpoint)
     keys = Array.isArray(keys) ? keys : [keys]
     this.rpc = new JsonRpc(endpoint, { fetch })
     this.api = new Api({
@@ -31,7 +30,8 @@ class EOSAPI {
     code,
     scope,
     table,
-    limit
+    limit,
+    lowerBound
   }) {
     scope = scope || code
     return this.rpc.get_table_rows({
@@ -39,22 +39,23 @@ class EOSAPI {
       code,
       scope,
       table,
-      limit
+      limit,
+      lower_bound: lowerBound
     })
   }
 
   async getAllTableRows ({
     code,
     scope,
-    table,
-    tableId
+    table
   }) {
     let allRows = []
     let rows = null
     let more = null
+    let nextKey = null
     let lowerBound = null
     do {
-      ({ rows, more } = await this.getTableRows(
+      ({ rows, more, next_key: nextKey } = await this.getTableRows(
         {
           code,
           scope,
@@ -62,11 +63,8 @@ class EOSAPI {
           lowerBound
         }
       ))
-      if (lowerBound) {
-        rows.shift()
-      }
       if (more) {
-        lowerBound = rows[rows.length - 1][tableId]
+        lowerBound = nextKey
       }
       allRows = allRows.concat(rows)
     } while (more)
@@ -78,19 +76,15 @@ class EOSAPI {
     code,
     scope,
     table,
-    tableId,
     keyProp,
     valueProp
   }) {
     const map = {}
-    console.log('Getting table rows: ', code, scope, table, tableId, keyProp, valueProp)
     const rows = await this.getAllTableRows({
       code,
       scope,
-      table,
-      tableId
+      table
     })
-    console.log('Got table rows: ', rows)
     rows.forEach(row => {
       map[row[keyProp]] = row[valueProp]
     })

@@ -13,7 +13,6 @@ class AccountingAPI {
     return this.eosAPI.getTableMap({
       code: this.contract,
       table: 'cursors',
-      tableId: 'key',
       keyProp: 'source',
       valueProp: 'last_cursor'
     })

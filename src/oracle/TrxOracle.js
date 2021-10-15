@@ -17,9 +17,7 @@ class TrxOracle {
 
   async run () {
     const promises = []
-    console.log('Loading cursors...')
     await this._loadCursors()
-    console.log('Loaded cursors...')
     for (const trxProvider of this.trxProviders) {
       const sources = trxProvider.getSources()
       for (const source of sources) {
@@ -66,7 +64,7 @@ class TrxOracle {
           // })
           cursor = trx.cursor
           const docTrx = this._toDocFormat(trx, source, cursor)
-          // await this._pushTrx(docTrx)
+          await this._pushTrx(docTrx)
         }
       }
     } catch (err) {
