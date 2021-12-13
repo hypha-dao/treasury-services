@@ -13,11 +13,11 @@ jobs:
       - name: Set docker-image-name to dev
         if: endsWith(github.ref, '/dev')
         run: |
-          echo "DOCKER_IMAGE_NAME=hypha-btc-treasury-api-dev" >> $GITHUB_ENV
+          echo "DOCKER_IMAGE_NAME=hypha-treasury-services-dev" >> $GITHUB_ENV
       - name: Set docker-image-name to prod
         if: endsWith(github.ref, '/master')
         run: |
-          echo "DOCKER_IMAGE_NAME=hypha-btc-treasury-api" >> $GITHUB_ENV
+          echo "DOCKER_IMAGE_NAME=hypha-treasury-services" >> $GITHUB_ENV
       - uses: actions/checkout@v1
       - name: Docker login
         run: docker login -u ${{ secrets.DOCKER_HUB_USER }} -p ${{ secrets.DOCKER_HUB_PASSWORD }}
