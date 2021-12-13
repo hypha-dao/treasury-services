@@ -113,7 +113,7 @@ class EOSAPI {
       actions
     }, {
       blocksBehind: 3,
-      expireSeconds: 30
+      expireSeconds: 200
     })
   }
 }

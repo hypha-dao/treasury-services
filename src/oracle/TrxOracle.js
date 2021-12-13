@@ -65,10 +65,11 @@ class TrxOracle {
           cursor = trx.cursor
           const docTrx = this._toDocFormat(trx, source, cursor)
           await this._pushTrx(docTrx)
+          console.log('Succesful transaction: ', JSON.stringify(docTrx, null, 4))
         }
       }
     } catch (err) {
-      console.log(`Error processing source: ${source}, error: `, err)
+      console.log(`Error processing source: ${source}, error: `, JSON.stringify(err, null, 4))
       throw err
     }
   }
