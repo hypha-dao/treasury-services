@@ -270,6 +270,8 @@ class BTCClient {
         const basePath = path.join(this.credentialsDir, wallet)
         let walletInfo = this._readFile(`${basePath}.json`)
         const password = this._readFile(`${basePath}.key`)
+        console.log('walletInfo: ', walletInfo)
+        console.log('psd: ', password)
         walletInfo = sjcl.decrypt(password, walletInfo)
         walletInfo = JSON.parse(walletInfo)
         client.fromObj(walletInfo.credentials)
