@@ -1,3 +1,4 @@
+const sleep = require('await-sleep')
 const { AccountingAPI, EOSAPI } = require('./service')
 const { BTC, Ether, EOS, Telos } = require('./model')
 const { TrxOracle } = require('./oracle')
@@ -18,11 +19,13 @@ const {
   ACCOUNTING_CONTRACT,
   EOS_ACCOUNT,
   EOS_ACCOUNT_KEY,
-  BTC_MIN_CONFIRMATIONS
+  BTC_MIN_CONFIRMATIONS,
+  RUN_INTERVAL_TIMEOUT_MINS
 } = process.env
 
 class TrxOracleRunner {
   async run () {
+    const runIntervalTimeoutMins = RUN_INTERVAL_TIMEOUT_MINS || 5
     const trxProviders = [
       new BTC({
         credentialsDir: BWS_CREDENTIALS_DIR,
@@ -59,8 +62,13 @@ class TrxOracleRunner {
       trxProviders,
       accountingAPI
     })
-    await oracle.run()
-    console.log('Oracle finished running')
+
+    while (true) {
+      console.log('Iniciating Oracle run')
+      await oracle.run()
+      console.log(`Oracle finished running, sleeping for ${runIntervalTimeoutMins} minute(s), sleep start: ${new Date()} ...`)
+      await sleep(runIntervalTimeoutMins * 60000)
+    }
   }
 }
 
